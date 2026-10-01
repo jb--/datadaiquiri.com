@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Datadaiquiri – We Build Things With Data</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230a0a0a'/%3E%3Ctext x='6' y='47' font-family='Georgia,serif' font-size='42' font-weight='400' letter-spacing='-2'%3E%3Ctspan fill='%23e8e4de'%3Ed%3C/tspan%3E%3Ctspan fill='%23f2c744'%3Ed%3C/tspan%3E%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --fg: #e8e4de;
+    --accent: #f2c744;
+    --muted: #5a5549;
+    --subtle: #1a1917;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* grain overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    mix-blend-mode: difference;
+  }
+
+  .logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.4rem;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+  }
+
+  .logo span { color: var(--accent); }
+
+  nav a {
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
+
+  nav a:hover { opacity: 1; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 3rem;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(3.5rem, 10vw, 9rem);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    max-width: 900px;
+    animation: fadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    margin-top: 2.5rem;
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.7;
+    animation: fadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 3rem;
+    left: 3rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    animation: fadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+  }
+
+  .scroll-hint::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 40px;
+    background: var(--muted);
+    margin-top: 0.8rem;
+    animation: grow 2s ease-in-out infinite;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 10rem 3rem;
+    border-top: 1px solid var(--subtle);
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-bottom: 3rem;
+  }
+
+  /* WHAT */
+  .what-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    max-width: 1100px;
+  }
+
+  .what-grid h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .what-grid h2 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .what-text {
+    color: var(--muted);
+    line-height: 1.85;
+    font-size: 1.05rem;
+    padding-top: 0.5rem;
+  }
+
+  /* SERVICES */
+  .services-list {
+    max-width: 800px;
+  }
+
+  .service-item {
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    cursor: default;
+    transition: all 0.4s;
+  }
+
+  .service-item:hover {
+    padding-left: 1.5rem;
+    border-bottom-color: var(--accent);
+  }
+
+  .service-item:hover .service-name {
+    color: var(--accent);
+  }
+
+  .service-name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    transition: color 0.4s;
+  }
+
+  .service-description {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-style: italic;
+  }
+
+  /* FOUNDER */
+  .founder-section {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 6rem;
+    max-width: 1100px;
+  }
+
+  .founder-section h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+  }
+
+  .founder-bio {
+    color: var(--muted);
+    line-height: 1.85;
+    font-size: 1rem;
+  }
+
+  .founder-bio strong {
+    color: var(--fg);
+    font-weight: 400;
+  }
+
+  .founder-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-content: start;
+    padding-top: 0.5rem;
+  }
+
+  .stat {
+    padding: 1.8rem 0;
+    border-top: 1px solid var(--subtle);
+  }
+
+  .stat-number {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.8rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    margin-top: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 12rem 3rem;
+  }
+
+  .cta-section h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    max-width: 700px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .cta-section h2 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .cta-btn {
+    display: inline-block;
+    padding: 1.1rem 3rem;
+    border: 1px solid var(--fg);
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 3rem;
+    border-top: 1px solid var(--subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  footer a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  footer a:hover { color: var(--accent); }
+
+  .footer-links { display: flex; gap: 2rem; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes grow {
+    0%, 100% { transform: scaleY(0.3); transform-origin: top; opacity: 0.3; }
+    50% { transform: scaleY(1); opacity: 1; }
+  }
+
+  /* scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav, .hero, section, .cta-section, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .what-grid, .founder-section { grid-template-columns: 1fr; gap: 2rem; }
+    .founder-stats { gap: 1rem; }
+    .service-name { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">data<span>daiquiri</span></div>
+  <a href="mailto:joerg@datadaiquiri.com">Let's talk</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>We build <em>things</em> with data.</h1>
+  <p class="hero-sub">AI engineering, data strategy, and intelligent systems. Based in Tenerife, working globally.</p>
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<!-- WHAT WE DO -->
+<section>
+  <div class="section-label reveal">What we do</div>
+  <div class="what-grid">
+    <h2 class="reveal">Data-driven solutions for <em>modern</em> businesses.</h2>
+    <div class="what-text reveal">
+      Datadaiquiri helps companies unlock the potential of their data. From AI-powered search and retrieval systems to data governance and cloud architecture – we deliver tailored solutions that create measurable impact.<br><br>
+      With deep expertise in machine learning, natural language processing, and production-grade AI systems, we support businesses at every stage of their data journey.
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section>
+  <div class="section-label reveal">Capabilities</div>
+  <div class="services-list">
+    <div class="service-item reveal">
+      <span class="service-name">AI Search & Retrieval</span>
+      <span class="service-description">Semantic search, RAG, vector systems</span>
+    </div>
+    <div class="service-item reveal">
+      <span class="service-name">Data Governance</span>
+      <span class="service-description">Compliance, quality, strategy</span>
+    </div>
+    <div class="service-item reveal">
+      <span class="service-name">Machine Learning</span>
+      <span class="service-description">From prototype to production</span>
+    </div>
+    <div class="service-item reveal">
+      <span class="service-name">Cloud & Data Architecture</span>
+      <span class="service-description">GCP, Azure, Databricks</span>
+    </div>
+    <div class="service-item reveal">
+      <span class="service-name">AI Consulting</span>
+      <span class="service-description">Evaluation, strategy, implementation</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section>
+  <div class="section-label reveal">Who</div>
+  <div class="founder-section">
+    <div class="reveal">
+      <h2>Dr. Jörg Bartnick</h2>
+      <div class="founder-bio">
+        <strong>PhD in Statistical Physics</strong>, AI engineer and data scientist with a track record of building production-grade systems at scale.<br><br>
+        Led search engineering and AI initiatives at <strong>trivago</strong>, including the go-live of AI-powered natural language hotel search. Built enterprise RAG systems at <strong>Forvis Mazars</strong>. Early data science experience in a <strong>Beijing ML startup</strong>.<br><br>
+        Now running Datadaiquiri from Tenerife. Co-founder of <strong>Kideon</strong>. Multilingual – German, English, Spanish.
+      </div>
+    </div>
+    <div class="founder-stats reveal">
+      <div class="stat">
+        <div class="stat-number">8+</div>
+        <div class="stat-label">Years in data & AI</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">50M+</div>
+        <div class="stat-label">Users impacted</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Industries served</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">GCP</div>
+        <div class="stat-label">Azure · Databricks</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="reveal">Let's talk about your <em>data.</em></h2>
+  <a href="mailto:joerg@datadaiquiri.com" class="cta-btn reveal">joerg@datadaiquiri.com</a>
+</section>
+
+<!-- AVISO LEGAL -->
+<section id="legal" style="padding: 6rem 3rem;">
+  <div class="section-label">Aviso Legal / Legal Notice</div>
+  <div style="max-width: 700px; color: var(--muted); font-size: 0.9rem; line-height: 1.8;">
+    <p>In compliance with Article 10 of Law 34/2002, of July 11, on Information Society Services and Electronic Commerce (LSSI-CE):</p>
+    <br>
+    <p><strong style="color: var(--fg); font-weight: 400;">Company:</strong> Datadaiquiri SL</p>
+    <p><strong style="color: var(--fg); font-weight: 400;">CIF:</strong> B19497635</p>
+    <p><strong style="color: var(--fg); font-weight: 400;">Registered address:</strong> Calle Drago 83, 38190 El Rosario, Tenerife, Spain</p>
+    <p><strong style="color: var(--fg); font-weight: 400;">Registro Mercantil:</strong> de Tenerife, Hoja TF-73029</p>
+    <p><strong style="color: var(--fg); font-weight: 400;">Contact:</strong> joerg@datadaiquiri.com</p>
+    <br>
+    <p>All content on this website (texts, images, logos, design, source code) is the property of Datadaiquiri SL or its licensors and is protected by intellectual and industrial property laws. Access to this website does not grant users any right to alter, modify, exploit, reproduce, or distribute its content without prior written authorization.</p>
+    <br>
+    <p>This website does not collect personal data through forms or cookies. Should this change, a Privacy Policy compliant with Regulation (EU) 2016/679 (GDPR) and Organic Law 3/2018 (LOPDGDD) will be published.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2025 Datadaiquiri SL · Tenerife, Spain</span>
+  <div class="footer-links">
+    <a href="#legal">Aviso Legal</a>
+    <a href="https://www.linkedin.com/in/bartnick/">LinkedIn</a>
+  </div>
+</footer>
+
+
+<script>
+  // scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
